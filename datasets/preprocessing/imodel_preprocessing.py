@@ -162,50 +162,54 @@ class iModelPreprocessing(BasePreprocessing):
             filebase["instance_gt_filepath"] = []
             filebase["filepath_crop"] = []
             for block_id, block in enumerate(blocks):
-                if mode == "validation":
-                    new_instance_ids = np.unique(
-                        block[:, -1], return_inverse=True
-                    )[1]
+                if len(block) > 100:
+                    if mode == "validation":
+                        new_instance_ids = np.unique(
+                            block[:, -1], return_inverse=True
+                        )[1]
 
-                    assert new_instance_ids.shape[0] == block.shape[0]
-                    # == 0 means -1 == no instance
-                    # new_instance_ids[new_instance_ids == 0]
-                    assert (
-                        new_instance_ids.max() < 1000
-                    ), "we cannot encode when there are more than 999 instances in a block"
+                        assert new_instance_ids.shape[0] == block.shape[0]
+                        # == 0 means -1 == no instance
+                        # new_instance_ids[new_instance_ids == 0]
+                        assert (
+                            new_instance_ids.max() < 1000
+                        ), "we cannot encode when there are more than 999 instances in a block"
 
-                    gt_data = (block[:, -2]) * 1000 + new_instance_ids
+                        gt_data = (block[:, -2]) * 1000 + new_instance_ids
 
-                    processed_gt_filepath = (
+                        processed_gt_filepath = (
+                            self.save_dir
+                            / "instance_gt"
+                            / mode
+                            / f"{filebase['scene'].replace('.txt', '')}_{block_id}.txt"
+                        )
+                        if not processed_gt_filepath.parent.exists():
+                            processed_gt_filepath.parent.mkdir(
+                                parents=True, exist_ok=True
+                            )
+                        np.savetxt(
+                            processed_gt_filepath,
+                            gt_data.astype(np.int32),
+                            fmt="%d",
+                        )
+                        filebase["instance_gt_filepath"].append(
+                            str(processed_gt_filepath)
+                        )
+
+                    processed_filepath = (
                         self.save_dir
-                        / "instance_gt"
                         / mode
-                        / f"{filebase['scene'].replace('.txt', '')}_{block_id}.txt"
+                        / f"{filebase['scene'].replace('.txt', '')}_{block_id}.npy"
                     )
-                    if not processed_gt_filepath.parent.exists():
-                        processed_gt_filepath.parent.mkdir(
+                    if not processed_filepath.parent.exists():
+                        processed_filepath.parent.mkdir(
                             parents=True, exist_ok=True
                         )
-                    np.savetxt(
-                        processed_gt_filepath,
-                        gt_data.astype(np.int32),
-                        fmt="%d",
-                    )
-                    filebase["instance_gt_filepath"].append(
-                        str(processed_gt_filepath)
-                    )
-
-                processed_filepath = (
-                    self.save_dir
-                    / mode
-                    / f"{filebase['scene'].replace('.txt', '')}_{block_id}.npy"
-                )
-                if not processed_filepath.parent.exists():
-                    processed_filepath.parent.mkdir(
-                        parents=True, exist_ok=True
-                    )
-                np.save(processed_filepath, block.astype(np.float32))
-                filebase["filepath_crop"].append(str(processed_filepath))
+                    np.save(processed_filepath, block.astype(np.float32))
+                    filebase["filepath_crop"].append(str(processed_filepath))
+                else:
+                    print("block was smaller than 100 points")
+                    assert False
 
         filebase["color_mean"] = [
             float((points[:, 3] / 255).mean()),
