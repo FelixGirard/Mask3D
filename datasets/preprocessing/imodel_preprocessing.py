@@ -157,12 +157,12 @@ class iModelPreprocessing(BasePreprocessing):
         filebase["filepath"] = str(processed_filepath)
 
         if mode in ["validation", "test"]:
-            blocks = self.splitPointCloud(points)
+            blocks = self.splitPointCloud(points, size=1000000)
 
             filebase["instance_gt_filepath"] = []
             filebase["filepath_crop"] = []
             for block_id, block in enumerate(blocks):
-                if len(block) > 100:
+                if len(block) > 1000:
                     if mode == "validation":
                         new_instance_ids = np.unique(
                             block[:, -1], return_inverse=True
@@ -208,7 +208,7 @@ class iModelPreprocessing(BasePreprocessing):
                     np.save(processed_filepath, block.astype(np.float32))
                     filebase["filepath_crop"].append(str(processed_filepath))
                 else:
-                    print("block was smaller than 100 points")
+                    print("block was smaller than 1000 points")
                     assert False
 
         filebase["color_mean"] = [
