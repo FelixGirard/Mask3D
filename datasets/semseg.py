@@ -110,6 +110,16 @@ class SemanticSegmentationDataset(Dataset):
                 13: [60, 130, 60],  # Clutter
                 14: [130, 30, 60],
             }  # Fence
+        elif self.dataset_name == "imodel":
+            self.color_map = {
+            0: [204, 204, 204],  # Unknown
+            1: [0, 255, 255],  # Bridge
+            2: [0, 0, 255],  # TopSurface
+            3: [255, 0, 0],  # Shoulder
+            4: [255, 255, 0],  # Grading
+            5: [127, 0, 127],  # Curb
+            6: [255, 0, 255],  # Ditch   
+            }
         elif self.dataset_name == "scannet200":
             self.color_map = SCANNET_COLOR_MAP_200
         elif self.dataset_name == "s3dis":
@@ -409,7 +419,7 @@ class SemanticSegmentationDataset(Dataset):
             assert not self.on_crops, "you need caching if on crops"
             points = np.load(self.data[idx]["filepath"].replace("../../", ""))
 
-        if "train" in self.mode and self.dataset_name in ["s3dis", "stpls3d"]:
+        if "train" in self.mode and self.dataset_name in ["s3dis", "stpls3d", "imodel"]:
             inds = self.random_cuboid(points)
             points = points[inds]
 
@@ -652,7 +662,7 @@ class SemanticSegmentationDataset(Dataset):
                 raw_coordinates,
                 idx,
             )
-        if self.dataset_name == "stpls3d":
+        if self.dataset_name == "stpls3d" or self.dataset_name == "imodel":
             if labels.shape[1] != 1:  # only segments --> test set!
                 if np.unique(labels[:, -2]).shape[0] < 2:
                     print("NO INSTANCES")
