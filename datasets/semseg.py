@@ -360,15 +360,9 @@ class SemanticSegmentationDataset(Dataset):
                 blocks.append(block)
             return blocks
         else:
-            print("splitting cloud")
-            print(inner_core)
-            print(size)
             limitMax = np.amax(cloud[:, 0:3], axis=0)
             width = int(np.ceil((limitMax[0] - inner_core) / stride)) + 1
             depth = int(np.ceil((limitMax[1] - inner_core) / stride)) + 1
-            print(width)
-            print(depth)
-            print(stride)
             cells = [
                 (x * stride, y * stride)
                 for x in range(width)
@@ -377,17 +371,12 @@ class SemanticSegmentationDataset(Dataset):
             blocks_outer = []
             conds_inner = []
             for (x, y) in cells:
-                try:
-                    xcond_outer = (
-                        cloud[:, 0] <= x + inner_core / 2.0 + size / 2
-                    ) & (cloud[:, 0] >= x + inner_core / 2.0 - size / 2)
-                    ycond_outer = (
-                        cloud[:, 1] <= y + inner_core / 2.0 + size / 2
-                    ) & (cloud[:, 1] >= y + inner_core / 2.0 - size / 2)
-                except:
-                    print(x)
-                    print(inner_core)
-                    print(size)
+                xcond_outer = (
+                    cloud[:, 0] <= x + inner_core / 2.0 + size / 2
+                ) & (cloud[:, 0] >= x + inner_core / 2.0 - size / 2)
+                ycond_outer = (
+                    cloud[:, 1] <= y + inner_core / 2.0 + size / 2
+                ) & (cloud[:, 1] >= y + inner_core / 2.0 - size / 2)
 
                 cond_outer = xcond_outer & ycond_outer
                 block_outer = cloud[cond_outer, :]
