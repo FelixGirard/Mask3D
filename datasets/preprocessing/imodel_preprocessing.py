@@ -157,12 +157,12 @@ class iModelPreprocessing(BasePreprocessing):
         filebase["filepath"] = str(processed_filepath)
 
         if mode in ["validation", "test"]:
-            blocks = self.splitPointCloud(points, size=1000000)
+            blocks = self.splitPointCloud(points)
 
             filebase["instance_gt_filepath"] = []
             filebase["filepath_crop"] = []
             for block_id, block in enumerate(blocks):
-                if len(block) > 1000:
+                if len(block) > 10000:
                     if mode == "validation":
                         new_instance_ids = np.unique(
                             block[:, -1], return_inverse=True
@@ -208,7 +208,7 @@ class iModelPreprocessing(BasePreprocessing):
                     np.save(processed_filepath, block.astype(np.float32))
                     filebase["filepath_crop"].append(str(processed_filepath))
                 else:
-                    print("block was smaller than 1000 points")
+                    print("block was smaller than 10000 points")
                     assert False
 
         filebase["color_mean"] = [
@@ -242,6 +242,7 @@ class iModelPreprocessing(BasePreprocessing):
         self._save_yaml(self.save_dir / "color_mean_std.yaml", feats_mean_std)
 
     def splitPointCloud(self, cloud, size=50.0, stride=50):
+        blockDensity = dict()
         limitMax = np.amax(cloud[:, 0:3], axis=0)
         width = int(np.ceil((limitMax[0] - size) / stride)) + 1
         depth = int(np.ceil((limitMax[1] - size) / stride)) + 1
@@ -256,7 +257,14 @@ class iModelPreprocessing(BasePreprocessing):
             ycond = (cloud[:, 1] <= y + size) & (cloud[:, 1] >= y)
             cond = xcond & ycond
             block = cloud[cond, :]
-            blocks.append(block)
+            if blockDensity.has_key(len(block)):
+                blockDensity[len(block)] += 1
+            else:
+                blockDensity[len(block)] = 1
+            if len(block) > 10000:
+                blocks.append(block)
+        print(blockDensity)
+
         return blocks
 
     @logger.catch

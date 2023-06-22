@@ -357,7 +357,8 @@ class SemanticSegmentationDataset(Dataset):
                 ycond = (cloud[:, 1] <= y + size) & (cloud[:, 1] >= y)
                 cond = xcond & ycond
                 block = cloud[cond, :]
-                blocks.append(block)
+                if len(block) > 10000:
+                    blocks.append(block)
             return blocks
         else:
             limitMax = np.amax(cloud[:, 0:3], axis=0)
@@ -389,9 +390,9 @@ class SemanticSegmentationDataset(Dataset):
                 )
 
                 cond_inner = xcond_inner & ycond_inner
-
-                conds_inner.append(cond_inner)
-                blocks_outer.append(block_outer)
+                if len(block) > 10000:
+                    conds_inner.append(cond_inner)
+                    blocks_outer.append(block_outer)
             return conds_inner, blocks_outer
 
     def map2color(self, labels):
