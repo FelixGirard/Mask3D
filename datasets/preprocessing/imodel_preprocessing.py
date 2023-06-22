@@ -257,7 +257,7 @@ class iModelPreprocessing(BasePreprocessing):
             ycond = (cloud[:, 1] <= y + size) & (cloud[:, 1] >= y)
             cond = xcond & ycond
             block = cloud[cond, :]
-            if blockDensity.has_key(len(block)):
+            if len(block) in blockDensity:
                 blockDensity[len(block)] += 1
             else:
                 blockDensity[len(block)] = 1
