@@ -366,6 +366,9 @@ class SemanticSegmentationDataset(Dataset):
             limitMax = np.amax(cloud[:, 0:3], axis=0)
             width = int(np.ceil((limitMax[0] - inner_core) / stride)) + 1
             depth = int(np.ceil((limitMax[1] - inner_core) / stride)) + 1
+            print(width)
+            print(depth)
+            print(stride)
             cells = [
                 (x * stride, y * stride)
                 for x in range(width)
