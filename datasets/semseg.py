@@ -342,7 +342,6 @@ class SemanticSegmentationDataset(Dataset):
             # self._data = new_data
 
     def splitPointCloud(self, cloud, size=50.0, stride=50, inner_core=-1):
-        size = float(size)
         if inner_core == -1:
             limitMax = np.amax(cloud[:, 0:3], axis=0)
             width = int(np.ceil((limitMax[0] - size) / stride)) + 1
@@ -361,6 +360,9 @@ class SemanticSegmentationDataset(Dataset):
                 blocks.append(block)
             return blocks
         else:
+            print("splitting cloud")
+            print(inner_core)
+            print(size)
             limitMax = np.amax(cloud[:, 0:3], axis=0)
             width = int(np.ceil((limitMax[0] - inner_core) / stride)) + 1
             depth = int(np.ceil((limitMax[1] - inner_core) / stride)) + 1
