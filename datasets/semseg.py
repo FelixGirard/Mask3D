@@ -377,15 +377,17 @@ class SemanticSegmentationDataset(Dataset):
             blocks_outer = []
             conds_inner = []
             for (x, y) in cells:
-                print(x)
-                print(inner_core / 2.0)
-                print(size / 2.0)
-                xcond_outer = (
-                    cloud[:, 0] <= x + inner_core / 2.0 + size / 2
-                ) & (cloud[:, 0] >= x + inner_core / 2.0 - size / 2)
-                ycond_outer = (
-                    cloud[:, 1] <= y + inner_core / 2.0 + size / 2
-                ) & (cloud[:, 1] >= y + inner_core / 2.0 - size / 2)
+                try:
+                    xcond_outer = (
+                        cloud[:, 0] <= x + inner_core / 2.0 + size / 2
+                    ) & (cloud[:, 0] >= x + inner_core / 2.0 - size / 2)
+                    ycond_outer = (
+                        cloud[:, 1] <= y + inner_core / 2.0 + size / 2
+                    ) & (cloud[:, 1] >= y + inner_core / 2.0 - size / 2)
+                except:
+                    print(x)
+                    print(inner_core)
+                    print(size)
 
                 cond_outer = xcond_outer & ycond_outer
                 block_outer = cloud[cond_outer, :]
