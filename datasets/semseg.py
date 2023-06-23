@@ -436,6 +436,8 @@ class SemanticSegmentationDataset(Dataset):
         raw_color = color
         raw_normals = normals
 
+        print()
+
         if not self.add_colors:
             color = np.ones((len(color), 3))
 
@@ -822,6 +824,10 @@ def elastic_distortion(pointcloud, granularity, magnitude):
     blurz = np.ones((1, 1, 3, 1)).astype("float32") / 3
     coords = pointcloud[:, :3]
     coords_min = coords.min(0)
+
+    print("coordsMin: " + str(coords_min))
+    print("coordsMax: " + str((coords - coords_min).max(0)))
+    print("granularity: " + str(granularity))
 
     # Create Gaussian noise tensor of the size given by granularity.
     noise_dim = ((coords - coords_min).max(0) // granularity).astype(int) + 3
