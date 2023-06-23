@@ -275,6 +275,7 @@ class SemanticSegmentationDataset(Dataset):
         if self.cache_data:
             new_data = []
             for i in range(len(self._data)):
+                print("caching: " + self.data[i]["filepath"])
                 self._data[i]["data"] = np.load(
                     self.data[i]["filepath"].replace("../../", "")
                 )
@@ -434,7 +435,7 @@ class SemanticSegmentationDataset(Dataset):
             idx = idx % len(self.data)
 
         if self.cache_data:
-            print("data from cache" + self.data[idx]["raw_filepath"])
+            print("data from cache " + self.data[idx]["raw_filepath"])
             points = self.data[idx]["data"]
         else:
             print("data from non filepath" + self.data[idx]["filepath"])
@@ -845,11 +846,6 @@ def elastic_distortion(pointcloud, granularity, magnitude):
     blurx = np.ones((3, 1, 1, 1)).astype("float32") / 3
     blury = np.ones((1, 3, 1, 1)).astype("float32") / 3
     blurz = np.ones((1, 1, 3, 1)).astype("float32") / 3
-    coords = pointcloud[:, :3]
-    coords_min = coords.min(0)
-
-    print("coords: " + str(coords_min) + "->" + str((coords - coords_min).max(0)))
-    print("granularity: " + str(granularity))
 
     # Create Gaussian noise tensor of the size given by granularity.
     noise_dim = ((coords - coords_min).max(0) // granularity).astype(int) + 3
