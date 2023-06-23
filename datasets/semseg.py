@@ -427,8 +427,6 @@ class SemanticSegmentationDataset(Dataset):
             inds = self.random_cuboid(points)
             points = points[inds]
 
-        print(self.data[idx]["raw_filepath"] + ": " + str(len(points)))
-
         coordinates, color, normals, segments, labels = (
             points[:, :3],
             points[:, 3:6],

@@ -86,7 +86,7 @@ class RandomCuboid(object):
             new_pointidx = (upper_idx) & (lower_idx)
 
             if np.sum(new_pointidx) < self.min_points:
-                print("TOO SMALL")
+                # print("TOO SMALL")
                 continue
 
             return new_pointidx
