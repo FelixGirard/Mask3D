@@ -436,6 +436,7 @@ class SemanticSegmentationDataset(Dataset):
         raw_color = color
         raw_normals = normals
 
+        print(self.data[idx]["filepath"].replace("../../", ""))
         coords_points = coordinates[:, :3]
         coords_min = coords_points.min(0)
         print("RawCoords0: " + str(coords_min) + "->" + str((coords_points - coords_min).max(0)))
@@ -461,15 +462,8 @@ class SemanticSegmentationDataset(Dataset):
                 normals = normals[new_idx]
                 points = points[new_idx]
 
-            coords_points = coordinates[:, :3]
-            coords_min = coords_points.min(0)
-            print("RawCoords1: " + str(coords_min) + "->" + str((coords_points - coords_min).max(0)))
-
             coordinates -= coordinates.mean(0)
 
-            coords_points = coordinates[:, :3]
-            coords_min = coords_points.min(0)
-            print("RawCoords2: " + str(coords_min) + "->" + str((coords_points - coords_min).max(0)))
             try:
                 coordinates += (
                     np.random.uniform(coordinates.min(0), coordinates.max(0))
@@ -480,9 +474,6 @@ class SemanticSegmentationDataset(Dataset):
                 print(coordinates.shape)
                 raise err
             
-            coords_points = coordinates[:, :3]
-            coords_min = coords_points.min(0)
-            print("RawCoords3: " + str(coords_min) + "->" + str((coords_points - coords_min).max(0)))
             if self.instance_oversampling > 0.0:
                 (
                     coordinates,
@@ -497,24 +488,13 @@ class SemanticSegmentationDataset(Dataset):
                     self.instance_oversampling,
                 )
 
-            coords_points = coordinates[:, :3]
-            coords_min = coords_points.min(0)
-            print("RawCoords4: " + str(coords_min) + "->" + str((coords_points - coords_min).max(0)))
             if self.flip_in_center:
                 coordinates = flip_in_center(coordinates)
-
-            coords_points = coordinates[:, :3]
-            coords_min = coords_points.min(0)
-            print("RawCoords5: " + str(coords_min) + "->" + str((coords_points - coords_min).max(0)))
 
             for i in (0, 1):
                 if random() < 0.5:
                     coord_max = np.max(points[:, i])
                     coordinates[:, i] = coord_max - coordinates[:, i]
-
-            coords_points = coordinates[:, :3]
-            coords_min = coords_points.min(0)
-            print("RawCoords6: " + str(coords_min) + "->" + str((coords_points - coords_min).max(0)))
 
             if random() < 0.95:
                 if self.is_elastic_distortion:
@@ -538,10 +518,6 @@ class SemanticSegmentationDataset(Dataset):
             color = np.squeeze(
                 self.image_augmentations(image=pseudo_image)["image"]
             )
-
-            coords_points = coordinates[:, :3]
-            coords_min = coords_points.min(0)
-            print("RawCoords7: " + str(coords_min) + "->" + str((coords_points - coords_min).max(0)))
 
             if self.point_per_cut != 0:
                 number_of_cuts = int(len(coordinates) / self.point_per_cut)
