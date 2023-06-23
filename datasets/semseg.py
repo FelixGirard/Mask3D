@@ -283,26 +283,23 @@ class SemanticSegmentationDataset(Dataset):
                         for block_id, block in enumerate(
                             self.splitPointCloud(self._data[i]["data"])
                         ):
-                            if len(block) > 10000:
-                                new_data.append(
-                                    {
-                                        "instance_gt_filepath": self._data[i][
+                            new_data.append(
+                                {
+                                    "instance_gt_filepath": self._data[i][
+                                        "instance_gt_filepath"
+                                    ][block_id]
+                                    if len(
+                                        self._data[i][
                                             "instance_gt_filepath"
-                                        ][block_id]
-                                        if len(
-                                            self._data[i][
-                                                "instance_gt_filepath"
-                                            ]
-                                        )
-                                        > 0
-                                        else list(),
-                                        "scene": f"{self._data[i]['scene'].replace('.txt', '')}_{block_id}.txt",
-                                        "raw_filepath": f"{self.data[i]['filepath'].replace('.npy', '')}_{block_id}",
-                                        "data": block,
-                                    }
-                                )
-                            else:
-                                assert False
+                                        ]
+                                    )
+                                    > 0
+                                    else list(),
+                                    "scene": f"{self._data[i]['scene'].replace('.txt', '')}_{block_id}.txt",
+                                    "raw_filepath": f"{self.data[i]['filepath'].replace('.npy', '')}_{block_id}",
+                                    "data": block,
+                                }
+                            )
                     else:
                         conds_inner, blocks_outer = self.splitPointCloud(
                             self._data[i]["data"],
@@ -314,27 +311,24 @@ class SemanticSegmentationDataset(Dataset):
                             cond_inner = conds_inner[block_id]
                             block_outer = blocks_outer[block_id]
 
-                            if cond_inner.sum() > 10000:
-                                new_data.append(
-                                    {
-                                        "instance_gt_filepath": self._data[i][
+                            new_data.append(
+                                {
+                                    "instance_gt_filepath": self._data[i][
+                                        "instance_gt_filepath"
+                                    ][block_id]
+                                    if len(
+                                        self._data[i][
                                             "instance_gt_filepath"
-                                        ][block_id]
-                                        if len(
-                                            self._data[i][
-                                                "instance_gt_filepath"
-                                            ]
-                                        )
-                                        > 0
-                                        else list(),
-                                        "scene": f"{self._data[i]['scene'].replace('.txt', '')}_{block_id}.txt",
-                                        "raw_filepath": f"{self.data[i]['filepath'].replace('.npy', '')}_{block_id}",
-                                        "data": block_outer,
-                                        "cond_inner": cond_inner,
-                                    }
-                                )
-                            else:
-                                assert False
+                                        ]
+                                    )
+                                    > 0
+                                    else list(),
+                                    "scene": f"{self._data[i]['scene'].replace('.txt', '')}_{block_id}.txt",
+                                    "raw_filepath": f"{self.data[i]['filepath'].replace('.npy', '')}_{block_id}",
+                                    "data": block_outer,
+                                    "cond_inner": cond_inner,
+                                }
+                            )
 
             if self.on_crops:
                 self._data = new_data
@@ -342,9 +336,6 @@ class SemanticSegmentationDataset(Dataset):
             # self._data = new_data
 
     def splitPointCloud(self, cloud, size=50.0, stride=50, inner_core=-1):
-        blocks = []
-        blocks.append(cloud)
-        return blocks
         if inner_core == -1:
             limitMax = np.amax(cloud[:, 0:3], axis=0)
             width = int(np.ceil((limitMax[0] - size) / stride)) + 1
@@ -360,8 +351,7 @@ class SemanticSegmentationDataset(Dataset):
                 ycond = (cloud[:, 1] <= y + size) & (cloud[:, 1] >= y)
                 cond = xcond & ycond
                 block = cloud[cond, :]
-                if len(block) > 10000:
-                    blocks.append(block)
+                blocks.append(block)
             return blocks
         else:
             limitMax = np.amax(cloud[:, 0:3], axis=0)
@@ -393,9 +383,8 @@ class SemanticSegmentationDataset(Dataset):
                 )
 
                 cond_inner = xcond_inner & ycond_inner
-                if len(block_outer) > 10000:
-                    conds_inner.append(cond_inner)
-                    blocks_outer.append(block_outer)
+                conds_inner.append(cond_inner)
+                blocks_outer.append(block_outer)
             return conds_inner, blocks_outer
 
     def map2color(self, labels):
