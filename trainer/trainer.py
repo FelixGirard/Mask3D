@@ -1025,6 +1025,7 @@ class InstanceSegmentation(pl.LightningModule):
         if self.validation_dataset.dataset_name in [
             "scannet",
             "stpls3d",
+            "imodel",
             "scannet200",
         ]:
             gt_data_path = f"{self.validation_dataset.data_dir[0]}/instance_gt/{self.validation_dataset.mode}"
@@ -1064,6 +1065,16 @@ class InstanceSegmentation(pl.LightningModule):
                     }
 
                 evaluate(new_preds, gt_data_path, pred_path, dataset="stpls3d")
+            elif self.validation_dataset.dataset_name == "imodel":
+                new_preds = {}
+                for key in self.preds.keys():
+                    new_preds[key.replace(".txt", "")] = {
+                        "pred_classes": self.preds[key]["pred_classes"],
+                        "pred_masks": self.preds[key]["pred_masks"],
+                        "pred_scores": self.preds[key]["pred_scores"],
+                    }
+
+                evaluate(new_preds, gt_data_path, pred_path, dataset="imodel")
             else:
                 evaluate(
                     self.preds,
