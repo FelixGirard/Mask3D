@@ -304,17 +304,27 @@ class SemanticSegmentationDataset(Dataset):
                             else:
                                 assert False
                     else:
+                        print("spliting point cloud for: " + self.data[i]["filepath"].replace("../../", ""))
+
                         conds_inner, blocks_outer = self.splitPointCloud(
                             self._data[i]["data"],
                             size=self.crop_length,
                             inner_core=self.eval_inner_core,
                         )
 
+                        print(str(len(blocks_outer)) + " blocks.")
+
                         for block_id in range(len(conds_inner)):
                             cond_inner = conds_inner[block_id]
                             block_outer = blocks_outer[block_id]
 
                             if cond_inner.sum() > 10000:
+                                coords_points = coordinates[:, :3]
+                                coords_min = coords_points.min(0)
+                                extent = (coords_points - coords_min).max(0)
+                                if numpy.amax(extent) > self.crop_length:
+                                    print("coords extent wrongly splitted: " + str((coords_points - coords_min).max(0)))
+
                                 new_data.append(
                                     {
                                         "instance_gt_filepath": self._data[i][
@@ -436,7 +446,7 @@ class SemanticSegmentationDataset(Dataset):
         raw_color = color
         raw_normals = normals
 
-        print(self.data[idx]["raw_filepath"])
+        print(self.data[idx]["scene"])
         coords_points = coordinates[:, :3]
         coords_min = coords_points.min(0)
         print("RawCoords0: " + str(coords_min) + "->" + str((coords_points - coords_min).max(0)))
