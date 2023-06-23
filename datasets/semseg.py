@@ -436,7 +436,7 @@ class SemanticSegmentationDataset(Dataset):
         raw_color = color
         raw_normals = normals
 
-        print(self.data[idx]["filepath"].replace("../../", ""))
+        print(self.data[idx]["raw_filepath"])
         coords_points = coordinates[:, :3]
         coords_min = coords_points.min(0)
         print("RawCoords0: " + str(coords_min) + "->" + str((coords_points - coords_min).max(0)))
