@@ -283,6 +283,7 @@ class SemanticSegmentationDataset(Dataset):
                         for block_id, block in enumerate(
                             self.splitPointCloud(self._data[i]["data"])
                         ):
+                            print("spliting point cloud (no inner) for: " + self.data[i]["filepath"].replace("../../", ""))
                             if len(block) > 10000:
                                 new_data.append(
                                     {
@@ -350,6 +351,14 @@ class SemanticSegmentationDataset(Dataset):
                 self._data = new_data
                 # new_data.append(np.load(self.data[i]["filepath"].replace("../../", "")))
             # self._data = new_data
+
+            print("semseg initialized!")
+            for i in range(len(self._data)):
+                print(self._data[i]["scene"])
+                print(self._data[i]["data"].shape)
+                coords_points = self._data[i]["data"][:, :3]
+                coords_min = coords_points.min(0)
+                print("extent: " + str((coords_points - coords_min).max(0)))
 
     def splitPointCloud(self, cloud, size=50.0, stride=50, inner_core=-1):
         if inner_core == -1:
@@ -425,8 +434,10 @@ class SemanticSegmentationDataset(Dataset):
             idx = idx % len(self.data)
 
         if self.cache_data:
+            print("data from cache" + self.data[idx]["raw_filepath"])
             points = self.data[idx]["data"]
         else:
+            print("data from non filepath" + self.data[idx]["filepath"])
             assert not self.on_crops, "you need caching if on crops"
             points = np.load(self.data[idx]["filepath"].replace("../../", ""))
 
@@ -446,10 +457,9 @@ class SemanticSegmentationDataset(Dataset):
         raw_color = color
         raw_normals = normals
 
-        print(self.data[idx]["scene"])
         coords_points = coordinates[:, :3]
         coords_min = coords_points.min(0)
-        print("RawCoords0: " + str(coords_min) + "->" + str((coords_points - coords_min).max(0)))
+        print(self.data[idx]["scene"] + " extent: " + str((coords_points - coords_min).max(0))
 
         if not self.add_colors:
             color = np.ones((len(color), 3))
