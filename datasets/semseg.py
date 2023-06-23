@@ -663,11 +663,22 @@ class SemanticSegmentationDataset(Dataset):
                 raw_coordinates,
                 idx,
             )
-        if self.dataset_name == "stpls3d" or self.dataset_name == "imodel":
+        if self.dataset_name == "stpls3d":
             if labels.shape[1] != 1:  # only segments --> test set!
                 if np.unique(labels[:, -2]).shape[0] < 2:
                     print("NO INSTANCES")
                     return self.__getitem__(0)
+            return (
+                coordinates,
+                features,
+                labels,
+                self.data[idx]["scene"],
+                raw_color,
+                raw_normals,
+                raw_coordinates,
+                idx,
+            )
+        if self.dataset_name == "imodel":
             return (
                 coordinates,
                 features,
