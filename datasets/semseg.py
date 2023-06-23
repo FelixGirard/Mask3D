@@ -459,7 +459,7 @@ class SemanticSegmentationDataset(Dataset):
 
         coords_points = coordinates[:, :3]
         coords_min = coords_points.min(0)
-        print(self.data[idx]["scene"] + " extent: " + str((coords_points - coords_min).max(0))
+        print(self.data[idx]["scene"] + " extent: " + str((coords_points - coords_min).max(0)))
 
         if not self.add_colors:
             color = np.ones((len(color), 3))
