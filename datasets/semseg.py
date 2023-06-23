@@ -66,7 +66,7 @@ class SemanticSegmentationDataset(Dataset):
         cropping=False,
         cropping_args=None,
         is_tta=False,
-        crop_min_size=20000,
+        crop_min_size=1000,
         crop_length=6.0,
         cropping_v1=True,
         reps_per_epoch=1,
