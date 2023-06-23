@@ -437,7 +437,7 @@ class SemanticSegmentationDataset(Dataset):
         if self.cache_data:
             print("data from cache for id " + str(idx) + " : " + self.data[idx]["raw_filepath"])
             for i in range(len(self.data)):
-                if self.data[i]["raw_filepath"]:
+                if self.data[i]["raw_filepath"] == self.data[idx]["raw_filepath"]:
                     print("found other id with this file: " + str(i))
             points = self.data[idx]["data"]
         else:
