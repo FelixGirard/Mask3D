@@ -242,6 +242,9 @@ class iModelPreprocessing(BasePreprocessing):
         self._save_yaml(self.save_dir / "color_mean_std.yaml", feats_mean_std)
 
     def splitPointCloud(self, cloud, size=50.0, stride=50):
+        blocks = []
+        blocks.append(cloud)
+        return blocks
         blockDensity = dict()
         limitMax = np.amax(cloud[:, 0:3], axis=0)
         width = int(np.ceil((limitMax[0] - size) / stride)) + 1
