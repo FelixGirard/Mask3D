@@ -501,6 +501,30 @@ def evaluate(
             LABEL_TO_ID[CLASS_LABELS[i]] = VALID_CLASS_IDS[i]
             ID_TO_LABEL[VALID_CLASS_IDS[i]] = CLASS_LABELS[i]
 
+    if dataset == "imodel":
+        # global CLASS_LABELS
+        # global VALID_CLASS_IDS
+        # global ID_TO_LABEL
+        # global LABEL_TO_ID
+
+        CLASS_LABELS = [
+            "Bridge",
+            "TopSurface",
+            "Shoulder",
+            "Grading",
+            "Curb",
+            "Ditch",
+        ]
+        VALID_CLASS_IDS = np.array(
+            [1, 2, 3, 4, 5, 6]
+        )
+
+        ID_TO_LABEL = {}
+        LABEL_TO_ID = {}
+        for i in range(len(VALID_CLASS_IDS)):
+            LABEL_TO_ID[CLASS_LABELS[i]] = VALID_CLASS_IDS[i]
+            ID_TO_LABEL[VALID_CLASS_IDS[i]] = CLASS_LABELS[i]
+
     if dataset == "s3dis":
         # global CLASS_LABELS
         # global VALID_CLASS_IDS
