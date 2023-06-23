@@ -319,7 +319,7 @@ class SemanticSegmentationDataset(Dataset):
                             block_outer = blocks_outer[block_id]
 
                             if cond_inner.sum() > 10000:
-                                coords_points = coordinates[:, :3]
+                                coords_points = block_outer[:, :3]
                                 coords_min = coords_points.min(0)
                                 extent = (coords_points - coords_min).max(0)
                                 if numpy.amax(extent) > self.crop_length:
