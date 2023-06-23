@@ -284,7 +284,6 @@ class SemanticSegmentationDataset(Dataset):
                         for block_id, block in enumerate(
                             self.splitPointCloud(self._data[i]["data"])
                         ):
-                            print("spliting point cloud (no inner) for: " + self.data[i]["filepath"].replace("../../", ""))
                             if len(block) > 10000:
                                 new_data.append(
                                     {
@@ -306,7 +305,6 @@ class SemanticSegmentationDataset(Dataset):
                             else:
                                 assert False
                     else:
-                        print("spliting point cloud for: " + self.data[i]["filepath"].replace("../../", ""))
 
                         conds_inner, blocks_outer = self.splitPointCloud(
                             self._data[i]["data"],
@@ -314,19 +312,12 @@ class SemanticSegmentationDataset(Dataset):
                             inner_core=self.eval_inner_core,
                         )
 
-                        print(str(len(blocks_outer)) + " blocks.")
 
                         for block_id in range(len(conds_inner)):
                             cond_inner = conds_inner[block_id]
                             block_outer = blocks_outer[block_id]
 
                             if cond_inner.sum() > 10000:
-                                coords_points = block_outer[:, :3]
-                                coords_min = coords_points.min(0)
-                                extent = (coords_points - coords_min).max(0)
-                                if numpy.amax(extent) > self.crop_length:
-                                    print("coords extent wrongly splitted: " + str((coords_points - coords_min).max(0)))
-
                                 new_data.append(
                                     {
                                         "instance_gt_filepath": self._data[i][
@@ -352,14 +343,6 @@ class SemanticSegmentationDataset(Dataset):
                 self._data = new_data
                 # new_data.append(np.load(self.data[i]["filepath"].replace("../../", "")))
             # self._data = new_data
-
-            print("semseg initialized!")
-            for i in range(len(self._data)):
-                print(self._data[i]["scene"])
-                print(self._data[i]["data"].shape)
-                coords_points = self._data[i]["data"][:, :3]
-                coords_min = coords_points.min(0)
-                print("extent: " + str((coords_points - coords_min).max(0)))
 
     def splitPointCloud(self, cloud, size=50.0, stride=50, inner_core=-1):
         if inner_core == -1:
@@ -435,19 +418,16 @@ class SemanticSegmentationDataset(Dataset):
             idx = idx % len(self.data)
 
         if self.cache_data:
-            print("data from cache for id " + str(idx) + " : " + self.data[idx]["raw_filepath"])
-            for i in range(len(self.data)):
-                if self.data[i]["raw_filepath"] == self.data[idx]["raw_filepath"]:
-                    print("found other id with this file: " + str(i))
             points = self.data[idx]["data"]
         else:
-            print("data from non filepath" + self.data[idx]["filepath"])
             assert not self.on_crops, "you need caching if on crops"
             points = np.load(self.data[idx]["filepath"].replace("../../", ""))
 
         if "train" in self.mode and self.dataset_name in ["s3dis", "stpls3d", "imodel"]:
             inds = self.random_cuboid(points)
             points = points[inds]
+
+        print(self.data[idx]["raw_filepath"] + ": " + str(len(points)))
 
         coordinates, color, normals, segments, labels = (
             points[:, :3],
@@ -463,7 +443,6 @@ class SemanticSegmentationDataset(Dataset):
 
         coords_points = coordinates[:, :3]
         coords_min = coords_points.min(0)
-        print(self.data[idx]["scene"] + " extent: " + str((coords_points - coords_min).max(0)))
 
         if not self.add_colors:
             color = np.ones((len(color), 3))
