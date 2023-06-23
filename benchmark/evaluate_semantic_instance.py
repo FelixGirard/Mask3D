@@ -986,6 +986,10 @@ def evaluate(
     for i, (k, v) in enumerate(preds.items()):
         gt_file = os.path.join(gt_path, k + ".txt")
         if not os.path.isfile(gt_file):
+            print("could not find ")
+            print(gt_path)
+            print(k)
+            print(gt_file)
             util.print_error(
                 "Scan {} does not match any gt file".format(k), user_fault=True
             )
