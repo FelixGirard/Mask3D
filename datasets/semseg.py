@@ -318,7 +318,6 @@ class SemanticSegmentationDataset(Dataset):
                             block_outer = blocks_outer[block_id]
 
                             if cond_inner.sum() > 10000:
-                                print("adding block " + block_id)
                                 new_data.append(
                                     {
                                         "instance_gt_filepath": self._data[i][
