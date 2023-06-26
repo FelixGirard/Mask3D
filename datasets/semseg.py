@@ -279,6 +279,7 @@ class SemanticSegmentationDataset(Dataset):
                 self._data[i]["data"] = np.load(
                     self.data[i]["filepath"].replace("../../", "")
                 )
+                print(self.on_crops)
                 if self.on_crops:
                     if self.eval_inner_core == -1:
                         for block_id, block in enumerate(
@@ -311,13 +312,13 @@ class SemanticSegmentationDataset(Dataset):
                             size=self.crop_length,
                             inner_core=self.eval_inner_core,
                         )
-
-
+                        print("splitting into " + str(len(blocks_outer)))
                         for block_id in range(len(conds_inner)):
                             cond_inner = conds_inner[block_id]
                             block_outer = blocks_outer[block_id]
 
                             if cond_inner.sum() > 10000:
+                                print("adding block " + block_id)
                                 new_data.append(
                                     {
                                         "instance_gt_filepath": self._data[i][
