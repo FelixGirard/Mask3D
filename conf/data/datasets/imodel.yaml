@@ -37,7 +37,6 @@ train_dataset:
   label_offset: 1
   is_elastic_distortion: true
   color_drop: 0.0
-  batch_size: 1
 
 validation_dataset:
   _target_: datasets.semseg.SemanticSegmentationDataset
