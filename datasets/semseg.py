@@ -423,7 +423,7 @@ class SemanticSegmentationDataset(Dataset):
             assert not self.on_crops, "you need caching if on crops"
             points = np.load(self.data[idx]["filepath"].replace("../../", ""))
 
-        if "train" in self.mode and self.dataset_name in ["s3dis", "stpls3d", "imodel"]:
+        if "train" in self.mode and self.dataset_name in ["s3dis", "stpls3d"]:
             inds = self.random_cuboid(points)
             points = points[inds]
 
