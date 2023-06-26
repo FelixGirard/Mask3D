@@ -156,7 +156,7 @@ class iModelPreprocessing(BasePreprocessing):
         np.save(processed_filepath, points.astype(np.float32))
         filebase["filepath"] = str(processed_filepath)
 
-        if mode in ["validation", "test"]:
+        if mode in ["validation", "test", "train"]:
             blocks = self.splitPointCloud(points)
 
             filebase["instance_gt_filepath"] = []
