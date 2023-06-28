@@ -117,8 +117,8 @@ class SemanticSegmentationDataset(Dataset):
             2: [0, 0, 255],  # TopSurface
             3: [255, 0, 0],  # Shoulder
             4: [255, 255, 0],  # Grading
-            5: [127, 0, 127],  # Curb
-            6: [255, 0, 255],  # Ditch   
+            5: [127, 0, 127],  # Ditch
+            6: [255, 0, 255],  # Curb   
             }
         elif self.dataset_name == "scannet200":
             self.color_map = SCANNET_COLOR_MAP_200

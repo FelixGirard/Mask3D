@@ -47,8 +47,8 @@ class iModelPreprocessing(BasePreprocessing):
             [0, 0, 255],  # TopSurface
             [255, 0, 0],  # Shoulder
             [255, 255, 0],  # Grading
-            [127, 0, 127],  # Curb
-            [255, 0, 255],  # Ditch   
+            [127, 0, 127],  # Ditch
+            [255, 0, 255],  # Curb   
         ]
 
         self.create_label_database()

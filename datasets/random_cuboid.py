@@ -92,5 +92,5 @@ class RandomCuboid(object):
             return new_pointidx
 
         # fallback
-        print("FALLBACK")
+        # print("FALLBACK")
         return np.ones(point_cloud.shape[0], dtype=np.bool)
