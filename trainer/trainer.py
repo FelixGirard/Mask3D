@@ -259,8 +259,6 @@ class InstanceSegmentation(pl.LightningModule):
         backbone_features=None,
     ):
 
-        full_res_coords -= full_res_coords.mean(axis=0)
-
         gt_pcd_pos = []
         gt_pcd_normals = []
         gt_pcd_color = []
